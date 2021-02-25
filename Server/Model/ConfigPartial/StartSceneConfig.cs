@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
 
 namespace ET
 {
@@ -70,39 +71,43 @@ namespace ET
             }
         }
 
-        private string outerAddress;
-        
-        public string OuterAddress
+        // 内网地址外网端口，通过防火墙映射端口过来
+        private IPEndPoint innerIPOutPort;
+
+        public IPEndPoint InnerIPOutPort
         {
             get
             {
-                if (this.outerAddress == null)
+                if (innerIPOutPort == null)
                 {
-                    this.outerAddress = $"{this.StartProcessConfig.OuterIP}:{this.OuterPort}";
+                    this.innerIPOutPort = NetworkHelper.ToIPEndPoint($"{this.StartProcessConfig.InnerIP}:{this.OuterPort}");
                 }
-                return this.outerAddress;
+
+                return this.innerIPOutPort;
             }
         }
-        
-        private string innerOuterAddress;
-        
-        public string InnerOuterAddress
+
+        private IPEndPoint outerIPPort;
+
+        // 外网地址外网端口
+        public IPEndPoint OuterIPPort
         {
             get
             {
-                if (this.innerOuterAddress == null)
+                if (this.outerIPPort == null)
                 {
-                    this.innerOuterAddress = $"{this.StartProcessConfig.InnerAddress}:{this.OuterPort}";
+                    this.outerIPPort = NetworkHelper.ToIPEndPoint($"{this.StartProcessConfig.OuterIP}:{this.OuterPort}");
                 }
-                return this.innerOuterAddress;
+
+                return this.outerIPPort;
             }
         }
 
-        public void BeginInit()
+        public override void BeginInit()
         {
         }
 
-        public void EndInit()
+        public override void EndInit()
         {
             this.Type = EnumHelper.FromString<SceneType>(this.SceneType);
             InstanceIdStruct instanceIdStruct = new InstanceIdStruct(this.Process, (uint) this.Id);

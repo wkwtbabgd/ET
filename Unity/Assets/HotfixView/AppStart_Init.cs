@@ -17,13 +17,16 @@ namespace ET
             Game.Scene.AddComponent<ConfigComponent>();
             ResourcesComponent.Instance.UnloadBundle("config.unity3d");
             
+            ConfigComponent.GetAllConfigBytes = LoadConfigHelper.LoadAllConfigBytes;
+            await ConfigComponent.Instance.LoadAsync();
+            
             Game.Scene.AddComponent<OpcodeTypeComponent>();
             Game.Scene.AddComponent<MessageDispatcherComponent>();
             Game.Scene.AddComponent<UIEventComponent>();
 
             ResourcesComponent.Instance.LoadBundle("unit.unity3d");
 
-            Scene zoneScene = await SceneFactory.CreateZoneScene(0, 0, "Game");
+            Scene zoneScene = await SceneFactory.CreateZoneScene(1, 1, "Game");
 
             await Game.EventSystem.Publish(new EventType.AppStartInitFinish() { ZoneScene = zoneScene });
         }
